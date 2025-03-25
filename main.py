@@ -17,6 +17,7 @@ class Score:
         self.round = 1
         self.max = 0
         self.allIn = 0
+        self.bet = [0] * n_players
 
     def show(self):
         print(f"Round: {self.round}")
@@ -34,7 +35,7 @@ class Score:
             if self.falded[i] == 1:
                 print("")
             else:
-                print(f"{self.namelist[i]}: {self.bets[i]}")
+                print(f"{self.namelist[i]}: {self.bets[i]} (total: {self.bet[i]})")
         print("")
 
     def changeStage(self):
@@ -43,13 +44,14 @@ class Score:
                 return True
         self.stage += 1
         self.turn = (self.dealer + 1) % self.n_players
-        if self.stage == 4:
-            return False
         self.status = self.falded.copy()
         self.field += sum(self.bets)
         for i in range(self.n_players):
             self.scores[i] -= self.bets[i]
+            self.bet[i] += self.bets[i]
             self.bets[i] = 0
+        if self.stage == 4:
+            return False
         self.max = 0
         return True
             
@@ -251,6 +253,7 @@ class Score:
             self.turn = (self.dealer + 1) % self.n_players
             self.max = 0
             self.allIn = 0
+            self.bet = [0] * self.n_players
 
 
 def clear():
