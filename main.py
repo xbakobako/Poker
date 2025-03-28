@@ -28,14 +28,14 @@ class Score:
         print("")
         print("Player's remaining tips:")
         for i in range(self.n_players):
-            print(f"{self.namelist[i]}: {self.scores[i]}")
+            print(f"{i+1} {self.namelist[i]}: {self.scores[i]}")
         print("")
         print("Bets:")
         for i in range(self.n_players):
             if self.falded[i] == 1:
                 print("")
             else:
-                print(f"{self.namelist[i]}: {self.bets[i]} (total: {self.bet[i]})")
+                print(f"{i+1} {self.namelist[i]}: {self.bets[i]} (total: {self.bet[i]})")
         print("")
 
     def changeStage(self):
@@ -50,7 +50,7 @@ class Score:
             self.scores[i] -= self.bets[i]
             self.bet[i] += self.bets[i]
             self.bets[i] = 0
-        if self.stage == 4:
+        if self.stage == 4 or sum(self.falded) == self.n_players - 1:
             return False
         self.max = 0
         return True
@@ -73,9 +73,9 @@ class Score:
                 continue
             clear()
             self.show()
-            print("Press r to raise, c to call, f to fold, or e to end the game.")
+            print("Press r to raise, b to blind, c to call, f to fold, or e to end the game.")
             choice = input(f"{self.namelist[self.turn]}, enter your choice: ")
-            if choice == 'r':
+            if choice == 'r' or choice == 'b':
                 if self.max >= self.scores[self.turn]:
                     print("You cannot raise more than your remaining tips.")
                     continue
@@ -100,7 +100,10 @@ class Score:
                     self.allIn = 1
                 self.max = raise_amount
                 self.status= self.falded.copy()
-                self.status[self.turn] = 1
+                if choice == 'r':
+                    self.status[self.turn] = 1
+                else:
+                    self.status[self.turn] = 0
                 self.turn = (self.turn + 1) % self.n_players
             elif choice == 'c':
                 self.bets[self.turn] = min(self.max, self.scores[self.turn])
@@ -109,6 +112,8 @@ class Score:
                 self.status[self.turn] = 1
                 self.turn = (self.turn + 1) % self.n_players
             elif choice == 'f':
+                if self.max == 0:
+                    continue
                 self.falded[self.turn] = 1
                 self.status[self.turn] = 1
                 self.turn = (self.turn + 1) % self.n_players
@@ -139,6 +144,7 @@ class Score:
                 self.status.append(0)
                 self.falded.append(0)
                 self.bets.append(0)
+                self.bet.append(0)
             elif choice == 'd':
                 while True:
                     try:
@@ -155,6 +161,9 @@ class Score:
                 del self.status[choice - 1]
                 del self.falded[choice - 1]
                 del self.bets[choice - 1]
+                del self.bet[choice - 1]
+                self.dealer = self.dealer % self.n_players
+                self.turn = (self.dealer+1) % self.n_players
                 continue
             try:
                 choice = int(choice)
