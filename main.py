@@ -34,6 +34,8 @@ class Score:
         for i in range(self.n_players):
             if self.falded[i] == 1:
                 print("")
+            elif self.turn == i:
+                print(f"{i+1} {self.namelist[i]}: {self.bets[i]} (total: {self.bet[i]}) <---")
             else:
                 print(f"{i+1} {self.namelist[i]}: {self.bets[i]} (total: {self.bet[i]})")
         print("")
