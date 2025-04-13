@@ -233,8 +233,9 @@ class Score:
             self.oneGame()
             clear()
             print("The game is over.")
-            if self.allIn == 1:
-                print("All in occurred.")
+            question = input("Are there multiple winners? (y/n): ")
+            if question.lower() == 'y' or self.allIn == 1:
+                # print("All in occurred.")
                 self.all()
             else:
                 print("Enter the number of the player who won.")
